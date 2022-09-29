@@ -1,0 +1,33 @@
+name: Deploy NuGet
+
+on:
+  push:
+    branches: [ nuget-release ]
+  pull_request:
+    branches: [ nuget-release ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    environment: release
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.400
+
+    - name: Build
+      run: |
+        cd EasyCommands
+        dotnet build EasyCommands.sln --configuration Release
+
+    # - name: Test
+    #   run: |
+    #     cd EasyCommands
+    #     dotnet test --no-build --verbosity normal --configuration Release
+
+    - name: Push EasyCommands
+      run: dotnet nuget push EasyCommands/EasyCommands/bin/Release/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
