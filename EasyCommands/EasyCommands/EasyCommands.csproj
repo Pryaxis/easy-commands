@@ -1,14 +1,22 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>Library</OutputType>
 		<TargetFramework>net6.0</TargetFramework>
-    
-    <AssemblyTitle>Easy Commands</AssemblyTitle>
-    <Product>EasyCommands</Product>
-    <Description>Reflection-based command line parsing for C#</Description>
-    <Copyright>Copyright © ZakFahey &amp; Pryaxis Contributors</Copyright>
-    <Version>1.1.0.0</Version>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<AssemblyTitle>TShock Easy Commands</AssemblyTitle>
+		<Product>TShock EasyCommands</Product>
+		<Description>Reflection-based command line parsing for C#</Description>
+		<Authors>Zak Fahey &amp; contributors</Authors>
+		<Copyright>Copyright © Zak Fahey &amp; contributors</Copyright>
+		<!-- ezc's nuget is 1.2.4 -->
+		<Version>1.2.5.0</Version>
+		<PackageVersion>1.2.5</PackageVersion>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageId>TShockEasyCommands</PackageId>
+		<PackageProjectUrl>https://github.com/Pryaxis/easy-commands</PackageProjectUrl>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<PackageTags>easy commands chat zak fahey tshock</PackageTags>
+		<PackageReleaseNotes>Converted to .net 6, allowed external type resolution and command registration.</PackageReleaseNotes>
 	</PropertyGroup>
 </Project>
