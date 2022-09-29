@@ -18,6 +18,17 @@ namespace EasyCommands.Commands
         protected Context<TSender> Context;
         protected Dictionary<Type, CustomAttribute> customAttributes = new Dictionary<Type, CustomAttribute>();
 
+        public delegate object ResolveTypeHandler(Type type);
+        /// <summary>
+        /// Allows external type resolution
+        /// </summary>
+        public event ResolveTypeHandler OnResolveType;
+
+        internal object ResolveType(Type type)
+        {
+            return OnResolveType?.Invoke(type);
+        }
+
         public abstract string SyntaxDocumentation(TSender sender);
 
         public CommandDelegate(Context<TSender> context, string mainName, string[] allNames)

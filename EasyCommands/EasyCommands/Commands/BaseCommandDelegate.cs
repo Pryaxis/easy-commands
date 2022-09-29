@@ -14,6 +14,10 @@ namespace EasyCommands.Commands
     {
         private MethodInfo callback;
         private ParameterInfo[] callbackParams;
+        /// <summary>
+        /// Holds the number of parameters that this instance will need to manage
+        /// </summary>
+        private int callbackParamsLength;
         private string[] paramNames;
         private int phraseIndex;
         private int flagsIndex;
@@ -29,11 +33,14 @@ namespace EasyCommands.Commands
             ShortName = shortName;
             this.callback = callback;
             callbackParams = callback.GetParameters();
+            callbackParamsLength = callbackParams
+                .Where(p => !Context.CommandRepository.CanResolveType(p.ParameterType)) // external types are not handled here
+                .Count();
             paramNames = callbackParams.Select(p => {
                 ParamName nameOverride = p.GetCustomAttribute<ParamName>();
                 return nameOverride == null ? p.Name : nameOverride.Name;
             }).ToArray();
-            maxLength = callbackParams.Length;
+            maxLength = callbackParamsLength;
             minLength = Array.FindIndex(callbackParams, p => p.HasDefaultValue);
             if(minLength == -1)
             {
@@ -79,7 +86,10 @@ namespace EasyCommands.Commands
                 throw new CommandRegistrationException(
                     $"{callback.DeclaringType.Name}.{callback.Name} cannot contain more than one flags parameter or parameter with the AllowSpaces attribute.");
             }
-            ParameterInfo undefinedParam = callbackParams.FirstOrDefault(p => !Context.ArgumentParser.ParseRuleExists(p.ParameterType));
+            ParameterInfo undefinedParam = callbackParams.FirstOrDefault(p => 
+                !Context.ArgumentParser.ParseRuleExists(p.ParameterType)
+                && !Context.CommandRepository.CanResolveType(p.ParameterType)
+            );
             if(undefinedParam != null)
             {
                 throw new CommandRegistrationException(
@@ -152,9 +162,11 @@ namespace EasyCommands.Commands
             int j = 0;
             for(int i = 0; i < callbackParams.Length; i++)
             {
-                if(i == flagsIndex || i == phraseIndex) // Handle multi-word arguments
+                if (ResolveType(callbackParams[i].ParameterType) is object obj)
+                    invocationParams[i] = obj;
+                else if(i == flagsIndex || i == phraseIndex) // Handle multi-word arguments
                 {
-                    int multiWordLength = args.Count() - callbackParams.Length + 1;
+                    int multiWordLength = args.Count() - callbackParamsLength + 1;
                     if(i >= args.Count() && i == phraseIndex)
                     {
                         invocationParams[i] = callbackParams[i].DefaultValue;

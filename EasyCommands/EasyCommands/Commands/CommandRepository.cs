@@ -50,5 +50,12 @@ namespace EasyCommands.Commands
         public abstract Task Invoke(TSender sender, string command);
 
         protected abstract void AddCommand(CommandDelegate<TSender> command, string[] names);
+
+        /// <summary>
+        /// Allows external type resolutions
+        /// </summary>
+        /// <param name="type">Type requested</param>
+        /// <returns>True when the type is supported by the external system, false otherwise</returns>
+        public virtual bool CanResolveType(Type type) => false;
     }
 }
