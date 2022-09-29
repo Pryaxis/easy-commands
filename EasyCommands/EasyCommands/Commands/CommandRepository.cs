@@ -26,13 +26,13 @@ namespace EasyCommands.Commands
             Context = context;
         }
 
-        public void RegisterCommand(string[] names, MethodInfo command)
+        public virtual void RegisterCommand(string[] names, MethodInfo command)
         {
             var newCommand = new BaseCommandDelegate<TSender>(Context, names[0], names, names[0], command);
             AddCommand(newCommand, names);
         }
 
-        public void RegisterCommandWithSubcommands(string[] names, Type command)
+        public virtual void RegisterCommandWithSubcommands(string[] names, Type command)
         {
             if(command.BaseType != typeof(CommandCallbacks<TSender>))
             {
